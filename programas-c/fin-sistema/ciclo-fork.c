@@ -6,10 +6,11 @@
 int main(){
     int conteo = 1;
     printf("Inicio proceso padre. PID: %d\n", getpid());
-    while(conteo <= 100){
+    while(1){
         pid_t pid = fork();
         if(pid == 0){
             printf("Inicio proceso hijo %d - PID: %d\n", conteo ,getpid());
+           sleep(1000);
         }
         conteo++;
     }

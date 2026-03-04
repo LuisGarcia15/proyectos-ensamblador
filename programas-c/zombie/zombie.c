@@ -7,13 +7,11 @@ int main(){
     pid_t pid = fork();
     int contador = 1;
     if(pid == 0){
-        while(contador <= 1000){
-            printf("Inicio proceso zombie PID: %d\n",getpid());
-            exit(0);
-        }    
+          printf("Inicio proceso zombie PID: %d\n",getpid());
+          exit(0);    
     }else{
             printf("Inicio proceso padre PID: %d\n", getpid());
-            sleep(1000);
+            sleep(10);
     }
     return 0;
 }
