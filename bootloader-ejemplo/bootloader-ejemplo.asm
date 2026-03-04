@@ -82,7 +82,20 @@ jmp .print ; Repite para el siguiente carácter - "Brinca a label .print"
 
 
 ; ------ Data ------
+;Define Byte (db): Define un espacio en memoria para almacenas datos | 1 Byte - 8 bits
+;Interpreta todo lo que sigue como secuencia de Bytes. 0 -> EOL: End Of Line, define
+;el fin de la cadena para mostrarla en pantalla
 msg: db 'Hola Mundo :D', 0
 
+;Estructura de MBR - 512 B
+; Se ha llenado tantos B, necesito solo 510 B
+;$ - Dirección actual de la instrucción
+;$$ - Devuelve la dirección de inicio
+;A la pocisión actual restarle la pocición inicial. Luego restarle a 510 ese valor
+;Resultando en un valor M, El resultado rellenarlo de 0 (Ceros)
+;Ensamblando M veces con cero. Es a nivel de código
 times 510-($-$$) db 0
+;Define Word (dw): Define un espacio en memoria para almacenas datos | 2 Byte - 16 bits
+;Interpreta todo lo que sigue como secuencia de Word. 0 -> EOL: End Of Line, define
+;el fin de la cadena para mostrarla en pantalla
 dw 0xAA55
