@@ -25,17 +25,7 @@ mov cl, 0x02           ; Número de sector en chs
 mov es, cx      ; Coloca la dirección del segmento
 mov bx, 0x0000      ;Coloca la dirección del offset 
 int 0x13            ;llamada a int 13
-jnc .exito          ; Si CF=0, saltar a la lógica de impresión
-;----------------------------------------------
-; Si llegamos aquí, hubo un error. 
-; Puedes imprimir un carácter en pantalla para saber que falló:
-mov ah, 0x0E
-mov al, 'E'         ; 'E' de Error
-int 0x10
-jmp $               ; Bucle infinito para detener el programa aquí
-;----------------------------------------------
 
-.exito:
 xor ax, ax ; Get 0
 mov es, ax ;ES to 0
 mov ds, ax ; Reset data segment to 0
@@ -52,7 +42,9 @@ pop es
 
 cld
 
-mov si, msg ; offset de msg en Source Index (registro para operaciones en cadena)
+mov ax, 0x1000
+mov ds, ax          ; Ahora DS = 0x1000
+mov si, 0x0000      ; Offset inicial de la data (el comienzo del buffer)
 
 .print:
 lodsb
@@ -66,8 +58,6 @@ jmp .print ; Repite para el siguiente carácter
 hlt ; Detiene la ejecucion y pone el CPU en estado inactivo de bajo consumo
 
 
-; ------ Data ------
-msg: db 'Hola Mundo :D', 0
-
+; ------ Firma Boot Loader ------
 times 510-($-$$) db 0
 dw 0xAA55
