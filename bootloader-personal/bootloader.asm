@@ -26,27 +26,6 @@ mov es, cx      ; Coloca la dirección del segmento
 mov bx, 0x0000      ;Coloca la dirección del offset 
 int 0x13            ;llamada a int 13
 
-jc error_lectura    ; Si Carry Flag está activo, hubo error
-
-    ; Si llegamos aquí, fue éxito
-    mov si, msg_listo
-    jmp imprimir
-
-error_lectura:
-    mov si, msg_incorrecto
-
-imprimir:
-    mov ah, 0x0E        ; Función teletype
-.loop:
-    lodsb               ; Carga byte de [DS:SI] en AL
-    test al, al         ; ¿Es el fin de la cadena (0)?
-    jz finalizar
-    int 0x10            ; Imprimir carácter
-    jmp .loop
-
-finalizar:
-    hlt                 ; Detener CPU
-
 xor ax, ax ; Get 0
 mov es, ax ;ES to 0
 mov ds, ax ; Reset data segment to 0
@@ -80,7 +59,5 @@ hlt ; Detiene la ejecucion y pone el CPU en estado inactivo de bajo consumo
 
 
 ; ------ Firma Boot Loader ------
-msg_listo: db '------------', 0
-msg_incorrecto: db 'XXXXXXXXX', 0
 times 510-($-$$) db 0
 dw 0xAA55
