@@ -26,6 +26,27 @@ mov es, cx      ; Coloca la dirección del segmento
 mov bx, 0x0000      ;Coloca la dirección del offset 
 int 0x13            ;llamada a int 13
 
+;____________________________________-
+jc .error_handler   ; Si CF=1, hubo un error
+
+    ; Si llega aquí, fue exitoso
+    mov si, msg_success
+    jmp .print_setup
+
+.error_handler:
+    mov si, msg_error
+    ; Podrías añadir lógica aquí para mostrar el código de error en AH
+    jmp .print_setup
+
+.print_setup:
+    xor ax, ax
+    mov ds, ax          ; Ajustamos DS
+    ; ... (resto del código de configuración de segmentos)
+
+    ; Nota: Aquí asegúrate de apuntar SI a la dirección correcta de los mensajes
+    ; Como ahora los mensajes están en otra parte, ajusta según tu mapa de memoria.
+;____________________________________-
+
 xor ax, ax ; Get 0
 mov es, ax ;ES to 0
 mov ds, ax ; Reset data segment to 0
