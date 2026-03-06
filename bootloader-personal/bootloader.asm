@@ -13,6 +13,7 @@ jmp 0x07C0:main; Ajusta el CS (Code Segment) a 0x07C0, IP a main
 main:
 cli ; Clear Interrupts
 
+;31 Bytes
 xor cx, 0x1000 ; Get 0
 mov ah, 0x02        ; Función: para leer sectores
 mov al, 0x01           ; Cantidad de sectores a leer
