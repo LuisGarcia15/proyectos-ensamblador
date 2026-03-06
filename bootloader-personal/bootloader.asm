@@ -12,15 +12,16 @@ jmp 0x07C0:main; Ajusta el CS (Code Segment) a 0x07C0, IP a main
 
 main:
 cli ; Clear Interrupts
+mov [boot_drive], dl    ; Guardamos el valor de la unidad inmediatamente
 
 ;31 Bytes
-xor cx, 0x1000 ; Get 0
+mov cx, 0x1000 ; Get 0
 mov ah, 0x02        ; Función: para leer sectores
 mov al, 0x01           ; Cantidad de sectores a leer
 mov ch, 0x00           ; Número de cilindro en chs
 mov dh, 0x00           ; Número de cabeza en chs
 mov cl, 0x02           ; Número de sector en chs
-mov dl, 0x00
+mov dl, [boot_drive]
 
 ;ES:BX -> Buffer e Memoria. ES:Segmento BX:Offset
 mov es, cx      ; Coloca la dirección del segmento
@@ -48,17 +49,18 @@ mov ds, ax          ; Ahora DS = 0x1000
 mov si, 0x0000      ; Offset inicial de la data (el comienzo del buffer)
 
 .print:
-lodsb
-test al, al ; Operacion AND entre al y al guardando las flags de la ALU
-jz .done ; Si ZF contiene 1, salta a done
+    lodsb
+    test al, al ; Operacion AND entre al y al guardando las flags de la ALU
+    jz .done ; Si ZF contiene 1, salta a done
 
-mov ah, 0x0E ; Función 0x0E de la INT 10h: "Teletype Output"
-int 0x10 ; Llamada a la interrupción de video del BIOS
-jmp .print ; Repite para el siguiente carácter
+    mov ah, 0x0E ; Función 0x0E de la INT 10h: "Teletype Output"
+    int 0x10 ; Llamada a la interrupción de video del BIOS
+    jmp .print ; Repite para el siguiente carácter
 .done:
-hlt ; Detiene la ejecucion y pone el CPU en estado inactivo de bajo consumo
+    hlt ; Detiene la ejecucion y pone el CPU en estado inactivo de bajo consumo
 
 
+boot_drive: db 0
 ; ------ Firma Boot Loader ------
 times 510-($-$$) db 0
 dw 0xAA55
