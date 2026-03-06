@@ -80,7 +80,7 @@ hlt ; Detiene la ejecucion y pone el CPU en estado inactivo de bajo consumo
 
 
 ; ------ Firma Boot Loader ------
-msg_listo: db 'Listo', 0
-msg_incorrecto: db 'Incorrecto', 0
+msg_listo: db '------------', 0
+msg_incorrecto: db 'XXXXXXXXX', 0
 times 510-($-$$) db 0
 dw 0xAA55
