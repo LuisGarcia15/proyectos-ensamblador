@@ -13,6 +13,32 @@ jmp 0x07C0:main; Ajusta el CS (Code Segment) a 0x07C0, IP a main
 main:
 cli ; Clear Interrupts
 mov [boot_drive], dl    ; Guardamos el valor de la unidad inmediatamente
+;---
+; Imprimimos el valor de la unidad detectada
+    mov al, [boot_drive]
+    call print_hex
+
+; --- Rutina para imprimir hex ---
+print_hex:
+    push ax
+    push ax
+    shr al, 4
+    call .nibble
+    pop ax
+    call .nibble
+    pop ax
+    ret
+.nibble:
+    and al, 0x0F
+    cmp al, 10
+    jl .num
+    add al, 7
+.num:
+    add al, '0'
+    mov ah, 0x0E
+    int 0x10
+    ret
+;---
 
 ;31 Bytes
 mov cx, 0x1000 ; Get 0
