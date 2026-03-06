@@ -1,6 +1,7 @@
 ; DIRECTIVAS -  Es una operación orientada al ensamblador que le indica 
 ;el curso/guia/comportamiento que debe tomar las instrucciones y/o
-;ejecución del programa. NO SON EJECUTADAS POR EL CPU
+;ejecución del programa. NO SON EJECUTADAS POR EL CPU. NO GENERAN
+;INSTRUCCIONES A NIVEL DE MEMORIA PRINCIPAL
 
 ;INSTRUCCIONES - Es una operación orientada a ser ejecutada por el CPU, 
 ;expresada en con un nombre simbolico. Representa un instrucción de una
@@ -11,7 +12,9 @@
 ;como simbolos de inicio de la etiqueta.
 
 ORG 0 ;Permite especificar la dirección origen donde NASM asume que el programa inicio.
-;desde ahí pudes dirigir el movimiento del programa.
+;desde ahí pudes dirigir el movimiento del programa. Hace independiente el código de donde
+;fue cargado en memoria. Puede ayudar a identificar la zona donde esta la instruccion del inicio
+;del archivo
 BITS 16 ;Especifica si NASM debe generar código generado para correr en una arquitectura
 ;de procesador 16,32 y 64 bits.
 ; --------- Formato inicial exigido por el BIOS (https://wiki.osdev.org/index.php?title=FAT#Boot_Record) ---------
@@ -21,8 +24,8 @@ _start:
 ;jmp transfiere el control del programa a una ubicación especifica en el codigo
 ;pudiendo ser una dirección de memoria, una label, un registro. Modificando
 ;el program counter
-jmp short start; 2 bytes
-nop; 1 byte 
+jmp short start; 2 bytes - El Opcode de JMP mide 8 bits, su operando mide 8 -EXIGIDO POR LA BIOS
+nop; 1 byte -EXIGIDO POR LA BIOS
 ;NoOperation: Intrucción que le indica que el CPU no haga ninguna
 ;operación por un ciclo. Usado para llenar con espacio la secuencia
 ;de instrucciones
@@ -34,7 +37,7 @@ times 33 nop ; Espacio para el BCP (BIOS CONTROL BLOCK)
 ;Label representa la dirección de memoria de una instrucción o datos
 start:
 jmp 0x07C0:main; Ajusta el CS (CODE SEGMENT) a 0x07C0
-;Salta al label main. coloca el CS en 0x07C0
+;Salta al label main. coloca el CS en 0x07C0. IP a main
 
 ;Label representa la dirección de memoria de una instrucción o datos
 main:
