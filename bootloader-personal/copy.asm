@@ -1,61 +1,72 @@
-ORG 0x7C00      ; Informamos al ensamblador de nuestra dirección de carga
+ORG 0
 BITS 16
 
 _start:
-    jmp short start
-    nop
+jmp short start
+nop
+
+times 33 nop 
 
 start:
-    ; 1. Salvar el ID de unidad pasado por el BIOS
-    mov [boot_drive], dl 
+jmp 0x07C0:main
 
-    ; 2. Configuración segura de segmentos y pila
-    xor ax, ax
-    mov ds, ax
-    mov es, ax
-    mov ss, ax
-    mov sp, 0x7C00  ; La pila crece hacia abajo desde el inicio del sector
+main:
+cli 
+; --- CAPTURAR DL AQUÍ ---
+mov [boot_drive], dl ; Guardamos el valor inicial de DL
 
-    ; 3. Preparar la lectura
-    mov ah, 0x02        
-    mov al, 0x01        ; Leer 1 sector
-    mov ch, 0x00        ; Cilindro 0
-    mov dh, 0x00        ; Cabeza 0
-    mov cl, 0x02        ; Sector 2 (el primer sector es el 1, este bootloader)
-    
-    mov bx, 0x1000      ; Segmento destino 0x1000
-    mov es, bx
-    mov bx, 0x0000      ; Offset 0
-    
-    mov dl, [boot_drive] ; USAR EL ID DE UNIDAD QUE GUARDAMOS
-    int 0x13            
-    
-    jc .error_handler   
+; --- IMPRIMIR DL ---
+mov al, [boot_drive]
+call print_hex
 
+; (Resto de tu código...)
+mov ah, 0x02        
+mov al, 0x01           
+mov ch, 0x00           
+mov dh, 0x00           
+mov cl, 0x02           
+
+xor cx, 0x1000 
+mov es, cx      
+mov bx, 0x0000      
+mov dl, [boot_drive] ; Usamos el valor capturado
+int 0x13            
+
+; --- (Tu lógica de mensajes) ---
+jc .error_handler   
     mov si, msg_success
     jmp .print_setup
 
 .error_handler:
     mov si, msg_error
+    jmp .print_setup
 
 .print_setup:
-    ; Nota: Como DS es 0, los mensajes deben estar referenciados 
-    ; correctamente. Para simplificar, añadimos el org 0x7C00 al inicio.
-    mov ah, 0x0E        
-.print_loop:
-    lodsb               
-    or al, al           
-    jz .done            
-    int 0x10
-    jmp .print_loop     
+    ; ... (Tu lógica de impresión existente) ...
 
-.done:
-    hlt                 
-    jmp .done           ; Bucle infinito para evitar ejecución de basura
+; --- RUTINA HEX (Nueva) ---
+print_hex:
+    push ax
+    mov ah, 0x0E
+    push ax
+    shr al, 4
+    call .nibble
+    pop ax
+    call .nibble
+    pop ax
+    ret
+.nibble:
+    and al, 0x0F
+    cmp al, 10
+    jl .digit
+    add al, 7
+.digit:
+    add al, '0'
+    int 0x10
+    ret
 
 boot_drive: db 0
-msg_success db 'Lectura exitosa!', 13, 10, 0
-msg_error   db 'Error de lectura!', 13, 10, 0
+msg_success db ' - Lectura exitosa!', 0
+msg_error   db ' - Error de lectura!', 0
 
-times 510-($-$$) db 0
-dw 0xAA55
+; ... (El resto de tu código de impresión sigue igual)
