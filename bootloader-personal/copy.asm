@@ -1,64 +1,61 @@
-ORG 0
+ORG 0x7C00      ; Informamos al ensamblador de nuestra dirección de carga
 BITS 16
-; --------- Formato inicial exigido por el BIOS (https://wiki.osdev.org/index.php?title=FAT#Boot_Record) ---------
-_start:
-jmp short start; 2 bytes
-nop; 1 byte
 
-times 33 nop ; Espacio para el BCP (Bios Control Block)
+_start:
+    jmp short start
+    nop
 
 start:
-jmp 0x07C0:main; Ajusta el CS (Code Segment) a 0x07C0, IP a main
+    ; 1. Salvar el ID de unidad pasado por el BIOS
+    mov [boot_drive], dl 
 
-main:
-cli ; Clear Interrupts
+    ; 2. Configuración segura de segmentos y pila
+    xor ax, ax
+    mov ds, ax
+    mov es, ax
+    mov ss, ax
+    mov sp, 0x7C00  ; La pila crece hacia abajo desde el inicio del sector
 
-;31 Bytes
-xor cx, 0x1000 ; Get 0
-mov ah, 0x02        ; Función: para leer sectores
-mov al, 0x01           ; Cantidad de sectores a leer
-mov ch, 0x00           ; Número de cilindro en chs
-mov dh, 0x00           ; Número de cabeza en chs
-mov cl, 0x02           ; Número de sector en chs
-
-;ES:BX -> Buffer e Memoria. ES:Segmento BX:Offset
-mov es, cx      ; Coloca la dirección del segmento
-mov bx, 0x0000      ;Coloca la dirección del offset 
-int 0x13            ; Llamada a int 13
+    ; 3. Preparar la lectura
+    mov ah, 0x02        
+    mov al, 0x01        ; Leer 1 sector
+    mov ch, 0x00        ; Cilindro 0
+    mov dh, 0x00        ; Cabeza 0
+    mov cl, 0x02        ; Sector 2 (el primer sector es el 1, este bootloader)
     
-    ; --- Verificación de error ---
-    jc .error_handler   ; Si CF=1, hubo un error
+    mov bx, 0x1000      ; Segmento destino 0x1000
+    mov es, bx
+    mov bx, 0x0000      ; Offset 0
+    
+    mov dl, [boot_drive] ; USAR EL ID DE UNIDAD QUE GUARDAMOS
+    int 0x13            
+    
+    jc .error_handler   
 
-    ; Si llega aquí, fue exitoso
     mov si, msg_success
     jmp .print_setup
 
 .error_handler:
     mov si, msg_error
-    jmp .print_setup
 
 .print_setup:
-    ; Aseguramos que DS apunte al segmento del código (0x07C0)
-    ; para poder leer las cadenas de texto msg_success o msg_error
-    mov ax, 0x07C0
-    mov ds, ax
-
+    ; Nota: Como DS es 0, los mensajes deben estar referenciados 
+    ; correctamente. Para simplificar, añadimos el org 0x7C00 al inicio.
+    mov ah, 0x0E        
 .print_loop:
-    lodsb               ; Carga byte en AL e incrementa SI
-    test al, al         ; ¿Es el fin de la cadena (0)?
-    jz .done            ; Si es cero, terminar
-    
-    mov ah, 0x0E        ; Función BIOS para imprimir carácter
+    lodsb               
+    or al, al           
+    jz .done            
     int 0x10
-    jmp .print_loop     ; Siguiente carácter
+    jmp .print_loop     
 
 .done:
-    hlt                 ; Detener ejecución
+    hlt                 
+    jmp .done           ; Bucle infinito para evitar ejecución de basura
 
-; --- Mensajes (deben estar dentro del sector de 512 bytes) ---
+boot_drive: db 0
 msg_success db 'Lectura exitosa!', 13, 10, 0
 msg_error   db 'Error de lectura!', 13, 10, 0
 
-; ------ Firma Boot Loader ------
 times 510-($-$$) db 0
 dw 0xAA55
