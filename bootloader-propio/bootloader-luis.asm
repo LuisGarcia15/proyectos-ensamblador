@@ -8,36 +8,12 @@ nop; 1 byte
 times 33 nop ; Espacio para el BCP (Bios Control Block)
 
 start:
-jmp 0x07C0:main; Ajusta el CS (Code Segment) a 0x07C0, IP a main
+jmp 0x07C0:main; Ajusta el CS (Code Segment) a 0x07C0
 
 main:
 cli ; Clear Interrupts
 
-;31 Bytes
-xor cx, 0x1000 ; Get 0
-mov ah, 0x02        ; Función: para leer sectores
-mov al, 0x01           ; Cantidad de sectores a leer
-mov ch, 0x00           ; Número de cilindro en chs
-mov dh, 0x00           ; Número de cabeza en chs
-mov cl, 0x02           ; Número de sector en chs
-
-;ES:BX -> Buffer e Memoria. ES:Segmento BX:Offset
-mov es, cx      ; Coloca la dirección del segmento
-mov bx, 0x0000      ;Coloca la dirección del offset 
-int 0x13            ;llamada a int 13
-jnc .exito          ; Si CF=0, saltar a la lógica de impresión
-;----------------------------------------------
-; Si llegamos aquí, hubo un error. 
-; Puedes imprimir un carácter en pantalla para saber que falló:
-mov ah, 0x0E
-mov al, 'E'         ; 'E' de Error
-int 0x10
-jmp $               ; Bucle infinito para detener el programa aquí
-;----------------------------------------------
-
-.exito:
 xor ax, ax ; Get 0
-mov es, ax ;ES to 0
 mov ds, ax ; Reset data segment to 0
 ; mov es, ax ; Reset extra segment (heap) to 0
 mov ss, ax ; Reset stack segment to 0
