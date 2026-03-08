@@ -1,5 +1,6 @@
 sudo dd if=bootloader.bin of=/dev/sda
 sudo dd if=texto.txt of=/dev/sda seek=1
 sudo qemu-system-x86_64 -drive format=raw,file=/dev/sda
-sudo qemu-system-x86_64 -hda
+sudo qemu-system-x86_64 -hda ./programa.bin
 sudo qemu-system-x86_64 -drive format=raw,file=/dev/disk4
+nasm -f bin prueba.asm -o programa.bin
