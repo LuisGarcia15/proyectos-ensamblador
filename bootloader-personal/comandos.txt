@@ -4,3 +4,4 @@ sudo qemu-system-x86_64 -drive format=raw,file=/dev/sda
 sudo qemu-system-x86_64 -hda ./programa.bin
 sudo qemu-system-x86_64 -drive format=raw,file=/dev/disk4
 nasm -f bin prueba.asm -o programa.bin
+sudo dd if=/dev/zero of=/dev/sda count=2
