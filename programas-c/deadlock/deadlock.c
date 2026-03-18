@@ -10,14 +10,13 @@ char recurso_A[50] = "Recurso A - Sin utilizar";
 char recurso_B[50] = "Recurso B - Sin utilizar";
 //Declaracion de MUTEX de forma estatica - Existen dos formas
 //de inicizializar
-pthread_mutex_t mutex1 = PTHREAD_MUTEX_INITIALIZER;
-pthread_mutex_t mutex2 = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 
 void *uso_recurso_ab(void *arg){
  //Bloqueo para el recurso A
  //Bloquea el MUTEX por el hilo que lo llama. Cambia su estado
  //de libre a ocupado
- pthread_mutex_lock(&mutex1);
+ pthread_mutex_lock(&mutex);
  printf("%s\n", recurso_A);
  strcpy(recurso_A, "Recurso A - Bloqueado por Hilo con ID:");
  printf("%s %i\n", recurso_A, pthread_self());
@@ -26,7 +25,7 @@ void *uso_recurso_ab(void *arg){
  //Bloqueo para el recurso A
  //Bloquea el MUTEX por el hilo que lo llama. Cambia su estado 
  //de libre a ocupado
- pthread_mutex_lock(&mutex2);
+ pthread_mutex_lock(&mutex);
  //Copia una cadena de caracteres desde un destino a un final strcpy(Destino, Origen)
  strcpy(recurso_B, "Recurso B - Bloqueado por Hilo con ID:");
  printf("%s %i\n", recurso_B, pthread_self());
@@ -40,7 +39,7 @@ void *uso_recurso_ba(void *arg){
  //Intento de bloqueo para uso de recurso B
  //Intenta bloquear  el MUTEX por el hilo que lo llama, de no poder 
  //realizarlo, retorna un codigo de error
- pthread_mutex_lock(&mutex2);
+ pthread_mutex_trylock(&mutex);
  printf("%s\n", recurso_B);
  strcpy(recurso_B, "Recurso B - Bloqueado por Hilo con ID:");
  printf("%s %i\n", recurso_B, pthread_self());
@@ -49,7 +48,7 @@ void *uso_recurso_ba(void *arg){
  //Intento de bloqueo para uso de recurso A 
  //Bloqua el MUTEX por el hilo que lo llama. Cambia su estado
  //de libre a ocupado
- pthread_mutex_lock(&mutex1);
+ pthread_mutex_lock(&mutex);
  //Copia una cadena de caracteres desde un destino a un final strcpy(Destino, Origen)  
  strcpy(recurso_A, "Recurso A - Bloqueado por Hilo con ID:");
  printf("%s %i\n", recurso_A, pthread_self());
