@@ -11,7 +11,7 @@ int main(){
           exit(0);    
     }else{
             printf("Inicio proceso padre PID: %d\n", getpid());
-            sleep(10);
+            sleep(100);
     }
     return 0;
 }
