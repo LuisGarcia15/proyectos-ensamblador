@@ -1,0 +1,9 @@
+Objetivo de la prueba:
+1-. Crear un archivo regular r
+2-. Crear un HardLink con referencia a r
+3-. Crear un SoftLink con referencia a r
+4-. Cambiar los permisos de r a solo escritura (w)
+5-. Analizar los permisos de HardLink, r y SoftLink
+6-. Abrir SoftLink
+7-. Analizar que paso
+

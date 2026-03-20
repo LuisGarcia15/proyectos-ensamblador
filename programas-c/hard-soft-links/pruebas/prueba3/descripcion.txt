@@ -1,0 +1,6 @@
+Descripcion de la prueba:
+1-. Crear un archivo regular r
+2-. Crear un HardLink con referencia a r
+3-. Crear un SoftLink con referencia a r
+4-. Observar la salida de stat de r, HardLink y SoftLink
+5-. Analizar el numero de inodo de cada uno

@@ -1,0 +1,27 @@
+----- Salida luis.txt -----
+  Fichero: luis.txt
+  Tamaño: 18        	Bloques: 8          Bloque E/S: 4096   regular file
+Device: 254,1	Inode: 327         Links: 2
+Acceso: (0664/-rw-rw-r--)  Uid: ( 1000/    luis)   Gid: ( 1000/    luis)
+      Acceso: 2026-03-19 21:02:28.648868594 -0600
+Modificación: 2026-03-19 21:02:28.648868594 -0600
+      Cambio: 2026-03-19 21:02:44.872003430 -0600
+    Creación: 2026-03-19 21:02:28.648868594 -0600
+----- Salida hl-luis.txt -----
+  Fichero: hl-luis.txt
+  Tamaño: 18        	Bloques: 8          Bloque E/S: 4096   regular file
+Device: 254,1	Inode: 327         Links: 2
+Acceso: (0664/-rw-rw-r--)  Uid: ( 1000/    luis)   Gid: ( 1000/    luis)
+      Acceso: 2026-03-19 21:02:28.648868594 -0600
+Modificación: 2026-03-19 21:02:28.648868594 -0600
+      Cambio: 2026-03-19 21:02:44.872003430 -0600
+    Creación: 2026-03-19 21:02:28.648868594 -0600
+----- Salida sl-luis.txt -----
+  Fichero: sl-luis.txt -> luis.txt
+  Tamaño: 8         	Bloques: 0          Bloque E/S: 4096   symbolic link
+Device: 254,1	Inode: 326         Links: 1
+Acceso: (0777/lrwxrwxrwx)  Uid: ( 1000/    luis)   Gid: ( 1000/    luis)
+      Acceso: 2026-03-19 21:05:53.430195481 -0600
+Modificación: 2026-03-19 21:05:51.854036543 -0600
+      Cambio: 2026-03-19 21:05:51.854036543 -0600
+    Creación: 2026-03-19 21:05:51.854036543 -0600

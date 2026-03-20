@@ -1,0 +1,6 @@
+El objetivo de esta prueba fue
+1-. Crear un archivo regular r
+2-. crear un Hard Link que apunta al archivo regular r
+3-. crear un Soft Link que apunta al archivo regular r
+4-. Borrar el archivo regular r
+5-. Observar el comportamiento del Hard Link y Soft Link
