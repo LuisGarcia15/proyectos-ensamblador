@@ -1,0 +1,1 @@
+gcc ataque-diccionario.c -o attack -lcrypt
